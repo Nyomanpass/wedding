@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 // --- Komponen Logo Ishana (Placeholder yang disesuaikan) ---
 const IshanaLogo = ({ ACCENT_COLOR }) => (
@@ -12,11 +12,84 @@ const IshanaLogo = ({ ACCENT_COLOR }) => (
     </svg>
 );
 
-
 // --- Komponen Utama Footer Final ---
-// Menggunakan nama komponen 'FooterSection' seperti di kode Anda.
-const FooterSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR, groom, bride, location, date }) => {
-    
+const FooterSection = ({ PRIMARY_COLOR, ACCENT_COLOR, groom, bride, location, date }) => {
+    const audioRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isMuted, setIsMuted] = useState(true); // muted by default to allow autoplay on many browsers
+    const AUDIO_SRC = "./public/weding.mp3"; // ganti dengan path audio Anda
+
+    useEffect(() => {
+        const el = audioRef.current;
+        if (!el) return;
+
+        // pastikan mute state tersinkron
+        el.muted = isMuted;
+
+        // coba play otomatis (bisa diblokir oleh browser jika tidak muted)
+        const tryPlay = async () => {
+            try {
+                await el.play();
+                setIsPlaying(true);
+            } catch {
+                setIsPlaying(false);
+            }
+        };
+        tryPlay();
+
+        return () => {
+            el.pause();
+        };
+    }, [isMuted]); // hanya saat mount dan saat isMuted berubah
+
+    useEffect(() => {
+        if (!audioRef.current) return;
+        audioRef.current.muted = isMuted;
+    }, [isMuted]);
+
+    // Play/unmute apabila undangan dibuka (dikirim oleh CoverSection saat klik)
+    useEffect(() => {
+        const onInvitationOpen = async () => {
+            const el = audioRef.current;
+            if (!el) return;
+            try {
+                // event dipicu saat user klik -> biasanya diizinkan
+                el.muted = false;
+                await el.play();
+                setIsPlaying(true);
+                setIsMuted(false);
+            } catch {
+                // jika browser masih blokir, biarkan kontrol manual tersedia
+            }
+        };
+        window.addEventListener('invitation:open', onInvitationOpen);
+        return () => window.removeEventListener('invitation:open', onInvitationOpen);
+    }, []);
+
+    const togglePlay = async (e) => {
+        e.stopPropagation();
+        const el = audioRef.current;
+        if (!el) return;
+        if (isPlaying) {
+            el.pause();
+            setIsPlaying(false);
+        } else {
+            try {
+                await el.play();
+                setIsPlaying(true);
+                // saat user tekan play, jika sebelumnya muted, unmute agar ada suara
+                if (isMuted) setIsMuted(false);
+            } catch {
+                setIsPlaying(false);
+            }
+        }
+    };
+
+    const toggleMute = (e) => {
+        e.stopPropagation();
+        setIsMuted((m) => !m);
+    };
+
     // Warna strip bawah yang solid
     const BOTTOM_STRIP_BG = 'bg-black'; 
 
@@ -24,20 +97,16 @@ const FooterSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR, groom, bride, lo
         <section id="final-footer" className={`w-full md:max-w-md mx-auto relative overflow-hidden h-[90vh] text-white`}>
             
             {/* --- Bagian Atas: Gambar Latar Belakang & Teks --- */}
-            <div className="relative w-full h-[70%]"> {/* Mengambil 70% tinggi section */}
+            <div className="relative w-full h-[70%]">
                 <img 
-                    src="/undangankanan.jpg" // GANTI DENGAN GAMBAR PRE-WEDDING UTAMA ANDA
+                    src="/undangankanan.jpg"
                     alt="Restu & Novi Closing" 
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                {/* Overlay Gelap dengan Gradien di bawah (sesuai desain) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" /> 
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" /> 
                 
-                {/* Konten Teks di Atas Gambar */}
                 <div className="absolute bottom-0 left-0 w-full text-center pb-8 z-10">
                     <h1 className={`text-6xl font-bold font-serif tracking-widest leading-none uppercase ${PRIMARY_COLOR}`}>{groom} & {bride}</h1>
-                    
-                    {/* PERBAIKAN: Menggunakan teks biasa dengan fallback */}
                     <p className={`text-sm tracking-widest opacity-90 font-sans mt-2 uppercase`}>
                         {location || "LOKASI"} | {date || "TANGGAL"}
                     </p>
@@ -47,10 +116,8 @@ const FooterSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR, groom, bride, lo
             {/* --- Bagian Bawah: Strip Hitam dengan Logo & Kredit --- */}
             <div className={`relative w-full h-[30%] ${BOTTOM_STRIP_BG} ${PRIMARY_COLOR} text-center py-6 flex flex-col justify-center items-center`}>
                 
-                {/* Logo Ishana */}
                 <IshanaLogo ACCENT_COLOR={ACCENT_COLOR} />
                 
-                {/* Teks Ishana Make Up Artiste (Nama Brand) */}
                 <h3 className={`text-2xl font-serif mt-2 tracking-widest leading-tight ${ACCENT_COLOR}`}>
                     ishana
                 </h3>
@@ -58,7 +125,6 @@ const FooterSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR, groom, bride, lo
                     make up artiste
                 </p>
 
-                {/* Kredit Vendor */}
                 <p className="text-xs tracking-wider mb-1 opacity-90">
                     Make Up & Wardrobe by
                 </p>
@@ -66,9 +132,36 @@ const FooterSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR, groom, bride, lo
                     Ishana MUA
                 </p>
                 
-                {/* Icon Musik */}
-                <div className="absolute bottom-4 right-4">
-                    <span className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white text-xs">🎶</span>
+                {/* Audio element (hidden native controls) */}
+                <audio
+                    ref={audioRef}
+                    src={AUDIO_SRC}
+                    loop
+                    preload="auto"
+                    // autoPlay diset tetapi browser mungkin blokir jika tidak muted
+                    autoPlay
+                />
+
+                {/* Kontrol Musik Kustom */}
+                <div className="absolute bottom-4 right-4 flex items-center gap-3 bg-white/5 rounded-full px-3 py-2">
+
+                    <button
+                        onClick={togglePlay}
+                        className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white text-sm hover:bg-white/20 focus:outline-none"
+                        aria-pressed={isPlaying}
+                        aria-label={isPlaying ? "Pause musik" : "Putar musik"}
+                    >
+                        {isPlaying ? "▌▌" : "►"}
+                    </button>
+
+                    <button
+                        onClick={toggleMute}
+                        className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white text-sm hover:bg-white/20 focus:outline-none"
+                        aria-pressed={!isMuted}
+                        aria-label={isMuted ? "Unmute" : "Mute"}
+                    >
+                        {isMuted ? "🔇" : "🔊"}
+                    </button>
                 </div>
             </div>
         </section>

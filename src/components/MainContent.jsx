@@ -78,7 +78,7 @@ const MainContent = ({ data }) => {
   const EVENT_TEXT_COLOR = 'text-[#36322A]'; // Teks cokelat tua/hitam
 
 
-  // === LOGIC SLIDESHOW HEADER (6 Detik) ===
+// === LOGIC SLIDESHOW HEADER (6 Detik) ===
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -92,7 +92,16 @@ const MainContent = ({ data }) => {
     }, 6000); // Interval 6 detik untuk ganti gambar
 
     return () => clearInterval(intervalId);
-  }, []); 
+  }, []);
+
+  // Update countdown every second so setTimeLeft is used and time stays current
+  useEffect(() => {
+    const tick = () => setTimeLeft(calculateTimeLeft());
+    // update immediately and then every second
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
 
   return (
@@ -126,7 +135,7 @@ const MainContent = ({ data }) => {
             >
                 {/* Gradient Overlay Diletakkan Langsung di atas Gambar */}
                 
-                <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-black/20"  />
+                <div className="absolute inset-0 bg-linear-to-b from-black/5 to-black/20"  />
             </div>
           );
         })}

@@ -17,10 +17,12 @@ const CoverSection = ({ data, isOpened, onOpen }) => {
   };
 
 
-  const rightBgStyle = {
-    backgroundImage: "url('/headerfoto.png')", 
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+  // removed unused style to avoid lint warning
+
+  const handleOpen = () => {
+    onOpen && onOpen();
+    // dispatch event agar FooterSection dapat memulai musik
+    window.dispatchEvent(new Event('invitation:open'));
   };
 
   return (
@@ -63,7 +65,7 @@ const CoverSection = ({ data, isOpened, onOpen }) => {
       >
        
         <div 
-          className="absolute inset-0 bg-gradient-to-b from-black/5 to-black/50" 
+          className="absolute inset-0 bg-linear-to-b from-black/5 to-black/50" 
         />
       </div>
 
@@ -93,7 +95,7 @@ const CoverSection = ({ data, isOpened, onOpen }) => {
 
 
        <button
-          onClick={onOpen}
+          onClick={handleOpen}
           className="
             px-4 py-3
             text-[.8rem]

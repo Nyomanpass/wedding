@@ -26,7 +26,7 @@ const DefaultProfileIcon = () => (
     <svg 
         // Mengubah warna ikon (text) menjadi putih solid
         // Mengubah warna latar belakang (bg) menjadi abu-abu tua/gelap
-        className="w-10 h-10 text-white bg-gray-700 rounded-full p-2 mr-3 flex-shrink-0" 
+        className="w-10 h-10 text-white bg-gray-700 rounded-full p-2 mr-3 shrink-0" 
         viewBox="0 0 24 24" 
         fill="currentColor"
     >
@@ -34,8 +34,11 @@ const DefaultProfileIcon = () => (
     </svg>
 );
 
+// Accent color utility for headings (Tailwind class)
+const ACCENT_COLOR = 'text-white';
+
 // --- Komponen Utama Guest Book ---
-const GuestBookSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR }) => {
+const GuestBookSection = () => {
     
     // State untuk mengelola input formulir
     const [name, setName] = useState('');
@@ -68,7 +71,10 @@ const GuestBookSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR }) => {
                     KATAKAN
                 </h2>
                 {/* Font script disimulasikan dengan italic dan ACCENT_COLOR */}
-                <p className={`text-5xl font-light italic text-white -mt-3 mb-8`}>
+                <p
+                    style={{ fontFamily: "'Dancing Script', 'Brush Script MT', 'Pacifico', cursive" }}
+                    className={`text-5xl font-light italic ${ACCENT_COLOR} -mt-3`}
+                >
                     Sesuatu
                 </p>
             </div>
@@ -130,7 +136,7 @@ const GuestBookSection = ({ BG_COLOR, PRIMARY_COLOR, ACCENT_COLOR }) => {
                     {comments.map((comment) => (
                         <div key={comment.id} className="flex border-b border-gray-700/50 pb-4">
                             <DefaultProfileIcon />
-                            <div className="flex-grow">
+                            <div className="grow">
                                 <div className="flex justify-between items-center text-sm mb-1">
                                     <span className="font-semibold text-white">{comment.name}</span>
                                     <div className="flex space-x-2 text-gray-400">
