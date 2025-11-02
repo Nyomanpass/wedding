@@ -94,77 +94,107 @@ const FooterSection = ({ PRIMARY_COLOR, ACCENT_COLOR, groom, bride, location, da
     const BOTTOM_STRIP_BG = 'bg-black'; 
 
     return (
-        <section id="final-footer" className={`w-full md:max-w-md mx-auto relative overflow-hidden h-[90vh] text-white`}>
-            
-            {/* --- Bagian Atas: Gambar Latar Belakang & Teks --- */}
-            <div className="relative w-full h-[70%]">
-                <img 
-                    src="/undangankanan.jpg"
-                    alt="Restu & Novi Closing" 
-                    className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" /> 
-                
-                <div className="absolute bottom-0 left-0 w-full text-center pb-8 z-10">
-                    <h1 className={`text-6xl font-bold font-serif tracking-widest leading-none uppercase ${PRIMARY_COLOR}`}>{groom} & {bride}</h1>
-                    <p className={`text-sm tracking-widest opacity-90 font-sans mt-2 uppercase`}>
-                        {location || "LOKASI"} | {date || "TANGGAL"}
-                    </p>
-                </div>
-            </div>
+<section
+  id="final-footer"
+  className="w-full md:max-w-md mx-auto relative overflow-hidden h-[90vh] text-white"
+  data-aos="fade-up"
+  data-aos-duration="1200"
+>
+  {/* --- Bagian Atas: Gambar Latar Belakang & Teks --- */}
+  <div
+    className="relative w-full h-[70%]"
+    data-aos="fade-up"
+    data-aos-delay="100"
+  >
+    <img
+      src="/undangankanan.jpg"
+      alt="Restu & Novi Closing"
+      className="absolute inset-0 w-full h-full object-cover"
+      data-aos="zoom-in"
+      data-aos-delay="200"
+    />
+    <div
+      className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"
+      data-aos="fade-in"
+      data-aos-delay="300"
+    />
 
-            {/* --- Bagian Bawah: Strip Hitam dengan Logo & Kredit --- */}
-            <div className={`relative w-full h-[30%] ${BOTTOM_STRIP_BG} ${PRIMARY_COLOR} text-center py-6 flex flex-col justify-center items-center`}>
-                
-                <IshanaLogo ACCENT_COLOR={ACCENT_COLOR} />
-                
-                <h3 className={`text-2xl font-serif mt-2 tracking-widest leading-tight ${ACCENT_COLOR}`}>
-                    ishana
-                </h3>
-                <p className={`text-[9px] -mt-1 mb-4 tracking-widest ${PRIMARY_COLOR} opacity-70 uppercase`}>
-                    make up artiste
-                </p>
+    <div
+      className="absolute bottom-0 left-0 w-full text-center pb-10 z-10"
+      data-aos="fade-up"
+      data-aos-delay="400"
+    >
+      <h1
+        className="text-6xl font-bold font-serif tracking-widest leading-none uppercase text-white"
+        data-aos="zoom-in"
+        data-aos-delay="500"
+      >
+        {groom} & {bride}
+      </h1>
+      <p
+        className="text-sm tracking-widest opacity-90 font-sans mt-3 uppercase text-gray-200"
+        data-aos="fade-up"
+        data-aos-delay="600"
+      >
+        {location || "LOKASI"} | {date || "TANGGAL"}
+      </p>
+    </div>
+  </div>
 
-                <p className="text-xs tracking-wider mb-1 opacity-90">
-                    Make Up & Wardrobe by
-                </p>
-                <p className="text-xs font-semibold opacity-90">
-                    Ishana MUA
-                </p>
-                
-                {/* Audio element (hidden native controls) */}
-                <audio
-                    ref={audioRef}
-                    src={AUDIO_SRC}
-                    loop
-                    preload="auto"
-                    // autoPlay diset tetapi browser mungkin blokir jika tidak muted
-                    autoPlay
-                />
+  {/* --- Bagian Bawah: Penutup --- */}
+  <div
+    className="relative w-full h-[30%] bg-black flex flex-col justify-center items-center text-center px-6"
+    data-aos="fade-up"
+    data-aos-delay="700"
+  >
+    <p
+      className="text-sm italic tracking-widest opacity-80"
+      data-aos="fade-up"
+      data-aos-delay="800"
+    >
+      “Terima kasih telah menjadi bagian dari hari bahagia kami.”
+    </p>
+    <p
+      className="mt-3 text-xs tracking-wide text-gray-400"
+      data-aos="fade-up"
+      data-aos-delay="900"
+    >
+      Dengan penuh cinta,
+    </p>
+    <p
+      className="text-xl font-serif mt-2 tracking-widest text-white"
+      data-aos="zoom-in"
+      data-aos-delay="1000"
+    >
+      {groom} & {bride}
+    </p>
 
-                {/* Kontrol Musik Kustom */}
-                <div className="absolute bottom-4 right-4 flex items-center gap-3 bg-white/5 rounded-full px-3 py-2">
+    {/* Musik */}
+    <audio ref={audioRef} src={AUDIO_SRC} loop preload="auto" autoPlay />
 
-                    <button
-                        onClick={togglePlay}
-                        className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white text-sm hover:bg-white/20 focus:outline-none"
-                        aria-pressed={isPlaying}
-                        aria-label={isPlaying ? "Pause musik" : "Putar musik"}
-                    >
-                        {isPlaying ? "▌▌" : "►"}
-                    </button>
+    {/* Kontrol Musik */}
+    <div
+      className="absolute bottom-4 right-4 flex items-center gap-3 bg-white/10 rounded-full px-3 py-2"
+      data-aos="fade-left"
+      data-aos-delay="1100"
+    >
+      <button
+        onClick={togglePlay}
+        className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20"
+      >
+        {isPlaying ? "▌▌" : "►"}
+      </button>
 
-                    <button
-                        onClick={toggleMute}
-                        className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white text-sm hover:bg-white/20 focus:outline-none"
-                        aria-pressed={!isMuted}
-                        aria-label={isMuted ? "Unmute" : "Mute"}
-                    >
-                        {isMuted ? "🔇" : "🔊"}
-                    </button>
-                </div>
-            </div>
-        </section>
+      <button
+        onClick={toggleMute}
+        className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20"
+      >
+        {isMuted ? "🔇" : "🔊"}
+      </button>
+    </div>
+  </div>
+</section>
+
     );
 };
 

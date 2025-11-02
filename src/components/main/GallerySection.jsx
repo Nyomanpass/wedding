@@ -35,6 +35,12 @@ const galleryData = [
     { id: 4, src: "/galery4.jpg", alt: "Restu & Novi 4" },
     { id: 5, src: "/galery5.png", alt: "Restu & Novi 5" },
     { id: 6, src: "/galery6.png", alt: "Restu & Novi 6" },
+    { id: 7, src: "/galery7.png", alt: "Restu & Novi 6" },
+    { id: 8, src: "/gambarheader.png", alt: "Restu & Novi 6" },
+    { id: 9, src: "/headerfoto.png", alt: "Restu & Novi 6" },
+    { id: 10, src: "/portodua.png", alt: "Restu & Novi 6" },
+    { id: 11, src: "/portosatu.jpg", alt: "Restu & Novi 6" },
+    { id: 12, src: "/undangankanan.jpg", alt: "Restu & Novi 6" },
 ];
 
 // --- Komponen Utama Galeri ---
@@ -61,87 +67,101 @@ const GallerySection = ({ ACCENT_COLOR }) => {
     const prev = (e) => { e.stopPropagation(); setOpenIndex((i) => (i - 1 + galleryData.length) % galleryData.length); };
 
     return (
-        <section id="galeri" className={`w-full md:max-w-md mx-auto bg-gray-900 text-white py-16`}>
-            
-            {/* --- Header Galeri: MOMENT Bahagia --- */}
-            <div className="text-center mb-10 pt-4 pb-8">
-                <h2 className="text-4xl font-serif tracking-widest uppercase opacity-90">
-                    MOMENT
-                </h2>
-                <p
-                    style={{ fontFamily: "'Dancing Script', 'Brush Script MT', 'Pacifico', cursive" }}
-                    className={`text-5xl font-light italic ${ACCENT_COLOR} -mt-3`}
+      <section id="galeri" className="w-full md:max-w-md mx-auto bg-gray-900 text-white py-16">
+      
+      {/* --- Header Galeri: MOMENT Bahagia --- */}
+      <div className="text-center mb-10 pt-4 pb-8" data-aos="fade-up">
+        <h2 className="text-4xl font-serif tracking-widest uppercase opacity-90">
+          MOMENT
+        </h2>
+        <p
+          style={{ fontFamily: "'Dancing Script', 'Brush Script MT', 'Pacifico', cursive" }}
+          className={`text-5xl font-light italic ${ACCENT_COLOR} -mt-3`}
+          data-aos="zoom-in"
+          data-aos-delay="200"
+        >
+          Bahagia
+        </p>
+      </div>
+
+      {/* --- Grid Foto 2 Kolom --- */}
+      <div className="grid grid-cols-2 gap-3 px-6">
+        {galleryData.map((photo, idx) => (
+          <div
+            key={photo.id}
+            data-aos="fade-up"
+            data-aos-delay={idx * 100} // delay bertahap tiap foto
+          >
+            <GalleryItem
+              src={photo.src}
+              alt={photo.alt}
+              onOpen={() => openAt(idx)}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* --- Lightbox Modal --- */}
+      {openIndex !== null && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4"
+          onClick={close}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Detail gambar ${galleryData[openIndex].alt}`}
+          data-aos="fade-in"
+        >
+          <div
+            className="relative max-w-4xl w-full max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+            data-aos="zoom-in"
+            data-aos-delay="150"
+          >
+            {/* Tombol Tutup */}
+            <button
+              onClick={close}
+              className="absolute top-3 right-3 text-white bg-black bg-opacity-40 rounded-full p-2 hover:bg-opacity-60 focus:outline-none"
+              aria-label="Tutup"
+            >
+              ✕
+            </button>
+
+            {/* Gambar Utama */}
+            <img
+              src={galleryData[openIndex].src}
+              alt={galleryData[openIndex].alt}
+              className="mx-auto object-contain max-h-[80vh] rounded"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            />
+
+            {/* Caption dan Navigasi */}
+            <div className="mt-4 text-center" data-aos="fade-up" data-aos-delay="400">
+              <p className={`text-lg ${ACCENT_COLOR} font-medium`}>
+                {galleryData[openIndex].alt}
+              </p>
+
+              <div className="mt-3 flex items-center justify-center gap-4">
+                <button
+                  onClick={prev}
+                  className="px-3 py-2 bg-opacity-10 rounded hover:bg-opacity-20 focus:outline-none"
+                  aria-label="Sebelumnya"
                 >
-                    Bahagia
-                </p>
-            </div>
-
-            {/* --- Grid Foto 2 Kolom --- */}
-            <div className="grid grid-cols-2 gap-3 px-6">
-                {galleryData.map((photo, idx) => (
-                    <GalleryItem 
-                        key={photo.id}
-                        src={photo.src}
-                        alt={photo.alt}
-                        onOpen={() => openAt(idx)}
-                    />
-                ))}
-            </div>
-
-            {/* --- Lightbox Modal --- */}
-            {openIndex !== null && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4"
-                    onClick={close}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label={`Detail gambar ${galleryData[openIndex].alt}`}
+                  ‹
+                </button>
+                <button
+                  onClick={next}
+                  className="px-3 py-2 bg-opacity-10 rounded hover:bg-opacity-20 focus:outline-none"
+                  aria-label="Berikutnya"
                 >
-                    <div
-                        className="relative max-w-4xl w-full max-h-[90vh] flex flex-col"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            onClick={close}
-                            className="absolute top-3 right-3 text-white bg-black bg-opacity-40 rounded-full p-2 hover:bg-opacity-60 focus:outline-none"
-                            aria-label="Tutup"
-                        >
-                            ✕
-                        </button>
-
-                        <img
-                            src={galleryData[openIndex].src}
-                            alt={galleryData[openIndex].alt}
-                            className="mx-auto object-contain max-h-[80vh] rounded"
-                        />
-
-                        <div className="mt-4 text-center">
-                            <p className={`text-lg ${ACCENT_COLOR} font-medium`}>
-                                {galleryData[openIndex].alt}
-                            </p>
-
-                            <div className="mt-3 flex items-center justify-center gap-4">
-                                <button
-                                    onClick={prev}
-                                    className="px-3 py-2 bg-opacity-10 rounded hover:bg-opacity-20 focus:outline-none"
-                                    aria-label="Sebelumnya"
-                                >
-                                    ‹
-                                </button>
-                                <button
-                                    onClick={next}
-                                    className="px-3 py-2 bg-opacity-10 rounded hover:bg-opacity-20 focus:outline-none"
-                                    aria-label="Berikutnya"
-                                >
-                                    ›
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-        </section>
+                  ›
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
     );
 };
 

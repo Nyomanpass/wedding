@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import CoverSection from './components/CoverSection';
 import MainContent from './components/MainContent';
 
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const weddingData = {
   groom: "Restu",
@@ -10,6 +12,8 @@ const weddingData = {
   location: "Pecatu",
   to: "alumni sd4"
 };
+
+
 
 
 const App = () => {
@@ -32,6 +36,13 @@ const App = () => {
         setIsOpened(true);
     }, 100); 
   };
+
+    useEffect(() => {
+    AOS.init({
+      duration: 1000, // durasi animasi (ms)
+      once: false, // animasi hanya muncul sekali
+    });
+  }, []);
 
   return (
     <div className="relative min-h-screen font-sans bg-gray-900 md:bg-gray-50">
